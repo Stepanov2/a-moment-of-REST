@@ -28,7 +28,7 @@ class DanceGroup(BaseModel):
 
 class Dancer(BaseModel):
     name = models.CharField(max_length=120)
-    born = models.DateField(null=True)
+    born = models.DateField(null=True, blank=True)
     dance_groups = models.ManyToManyField(DanceGroup, through='DanceGroupDancers')
 
     def __str__(self):
@@ -48,6 +48,6 @@ class DanceGroupDancers(BaseModel):
 
     class Meta:
         unique_together = ['dancer', 'dance_group']
-        ordering = ['dance_group', 'dancer_name']
+        ordering = ['dance_group', 'dancer__name']
 
 
