@@ -10,7 +10,7 @@ class DancerViewSet(viewsets.ModelViewSet):
     """
     queryset = Dancer.objects.all().order_by('name')
     serializer_class = DancerSerializer
-    permission_classes = [permissions.IsAuthenticated]
+
 
 
 class DanceGroupViewSet(viewsets.ModelViewSet):
@@ -19,4 +19,3 @@ class DanceGroupViewSet(viewsets.ModelViewSet):
     """
     queryset = DanceGroup.objects.all()
     serializer_class = DanceGroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
