@@ -7,6 +7,7 @@ class AddedPhotoInline(admin.TabularInline):
     model = Image
     extra = 3
 
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
 
@@ -16,13 +17,15 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Added)
-class UserAdmin(admin.ModelAdmin):
+class AddedAdmin(admin.ModelAdmin):
+    list_display = ('pk', '__str__', 'status', )
     search_fields = ('user_email', 'title')
     inlines = [AddedPhotoInline,]
+    ordering = ('status', '-pk')
 
 
 @admin.register(Image)
-class UserAdmin(admin.ModelAdmin):
+class ImageAdmin(admin.ModelAdmin):
     list_display = ('pk', 'title',)
     search_fields = ('title',)
     list_display_links = ('title',)
