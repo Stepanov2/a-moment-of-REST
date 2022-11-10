@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class BaseModel(models.Model):
@@ -22,6 +23,12 @@ PEREVAL_DIFFICULTIES = [
     (6, '3-Б'),
 ]
 
+POSSIBLE_PEREVAL_STATUSES = [
+    ('new', 'Загружено пользователем'),
+    ('pending', 'Взято в проверку'),
+    ('accepted', 'Принято'),
+    ('rejected', 'Отклонено'),
+]
 
 class PerevalCategoryField(models.PositiveSmallIntegerField):
 
@@ -68,7 +75,7 @@ class User(BaseModel):
     phone = models.CharField(max_length=25, null=True, blank=True)
 
     class Meta:
-        pass
+        ordering = ['email']
 
     def __str__(self):
         return f'{self.fam} {self.name} {self.otc} <{self.email}>'
@@ -76,10 +83,13 @@ class User(BaseModel):
 
 class Added(BaseModel):
     """Обзор перевала, добавленный пользователем"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     beauty_title = models.CharField(max_length=50, null=True, blank=True)
     title = models.CharField(max_length=100)
     other_titles = models.CharField(max_length=100, null=True, blank=True)
     connect = models.CharField(max_length=200, null=True, blank=True)
+
+    add_time = models.DateTimeField(default=timezone.now())
 
     level_summer = PerevalCategoryField()
     level_autumn = PerevalCategoryField()
@@ -90,11 +100,13 @@ class Added(BaseModel):
     longitude = CoordinateField()
     altitude = HeightField()
 
+    status = models.CharField(max_length=15, choices=POSSIBLE_PEREVAL_STATUSES, default='new')
+
     class Meta:
-        pass
+        ordering = ['add_time']
 
     def __str__(self):
-        return self.name
+        return f'{self.beauty_title} {self.title} ({self.other_titles})'
     pass
 
 
