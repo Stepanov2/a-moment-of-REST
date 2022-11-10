@@ -19,11 +19,14 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 
-from hello_rest_world.views import DancerViewSet, DanceGroupViewSet
+
+from pereval.views import PerevalViewSet, ImageViewSet, UserViewSet
 
 router = routers.DefaultRouter()
-router.register('dancers', DancerViewSet)
-router.register('dancegroups', DanceGroupViewSet)
+router.register('pereval', PerevalViewSet)
+router.register('image-detail', ImageViewSet)
+router.register('user-detail', UserViewSet)
+
 
 
 # Wire up our API using automatic URL routing.
