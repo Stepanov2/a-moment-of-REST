@@ -23,13 +23,21 @@ class ImagesSerializer(serializers.HyperlinkedModelSerializer):
 class PerevalSerializer(serializers.HyperlinkedModelSerializer):
     coords = serializers.SerializerMethodField(read_only=True)
     level = serializers.SerializerMethodField(read_only=True)
+    user = UserSerializer()
+    images = ImagesSerializer(source='image_set', many=True)
+
     class Meta:
         model = Added
         fields = ['pk', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
-                  'coords', 'level', 'image_set']
+                  'coords', 'level', 'images']
 
     def get_coords(self, obj):
-        return {}
+        # print(obj.level_autumn.__dict__)
+        return {
+            'latitude': obj.latitude,
+            'longitude': obj.longitude,
+            'height': obj.height,
+        }
 
     def get_level(self, obj):
         return {}

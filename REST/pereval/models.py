@@ -44,7 +44,7 @@ def validate_coordinates(value: float):
         raise ValidationError(f'одна из координат перевала выходит за границы допустимых значений. {value} ∉ [-90,90] ')
 
 
-def validate_height(value:int):
+def validate_height(value: int):
     if not (0 <= value <= 8850):
         raise ValidationError(f'Неверная высота. {value} ∉ [0,8850] ')
 
@@ -98,7 +98,7 @@ class Added(BaseModel):
 
     latitude = CoordinateField()
     longitude = CoordinateField()
-    altitude = HeightField()
+    height = HeightField()
 
     status = models.CharField(max_length=15, choices=POSSIBLE_PEREVAL_STATUSES, default='new')
 
