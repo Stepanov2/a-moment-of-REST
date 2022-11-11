@@ -1,6 +1,8 @@
 from .models import *
 from rest_framework import serializers
 
+DIFFICULTY_DICT = dict(PEREVAL_DIFFICULTIES)
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -27,10 +29,31 @@ class CoordsSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['latitude', 'longitude', 'height']
 
 
+class LevelChoiceField(serializers.IntegerField):
+    """This returns/accepts labels("2-Б") instead of values (4)."""
+
+    def to_representation(self, data):
+        try:
+            return DIFFICULTY_DICT[data]
+        except KeyError:
+            return None
+
+    def to_internal_value(self, data):
+        for key, value in DIFFICULTY_DICT.items():
+            if value == data:
+                return key
+        self.fail('Выбрана несуществующая категория перевала.', input=data)
+
+
 class LevelSerializer(serializers.HyperlinkedModelSerializer):
+    winter = LevelChoiceField(source='level_winter')
+    summer = LevelChoiceField(source='level_summer')
+    autumn = LevelChoiceField(source='level_autumn')
+    spring = LevelChoiceField(source='level_spring')
+
     class Meta:
         model = Added
-        fields = ['level_winter', 'level_summer', 'level_autumn', 'level_spring']
+        fields = ['winter', 'summer', 'autumn', 'spring']
 
 
 class PerevalSerializer(serializers.HyperlinkedModelSerializer):
