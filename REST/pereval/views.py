@@ -15,7 +15,7 @@ class PerevalViewSet(viewsets.ModelViewSet):
 
 class ImageViewSet(viewsets.ModelViewSet):
     """
-    Returns image(s) for pereval.
+    Image browser.
     """
     queryset = Image.objects.all()
     serializer_class = ImagesSerializer
@@ -23,7 +23,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    Returns image(s) for pereval.
+    User browser
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer

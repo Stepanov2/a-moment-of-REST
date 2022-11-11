@@ -31,7 +31,7 @@ POSSIBLE_PEREVAL_STATUSES = [
 ]
 
 class PerevalCategoryField(models.PositiveSmallIntegerField):
-
+    """Поле выбора сложности перевала."""
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = PEREVAL_DIFFICULTIES
         kwargs['null'] = True
@@ -40,16 +40,19 @@ class PerevalCategoryField(models.PositiveSmallIntegerField):
 
 
 def validate_coordinates(value: float):
+    """Убеждается, что мы на земле)"""
     if not (-90 <= value <= 90):
         raise ValidationError(f'одна из координат перевала выходит за границы допустимых значений. {value} ∉ [-90,90] ')
 
 
 def validate_height(value: int):
+    """Убеждается, что мы не выше Эвереста и не под водой) """
     if not (0 <= value <= 8850):
         raise ValidationError(f'Неверная высота. {value} ∉ [0,8850] ')
 
 
 class CoordinateField(models.FloatField):
+    """Поле широты/долготы"""
     def __init__(self, *args, **kwargs):
         kwargs['null'] = True
         kwargs['blank'] = True
@@ -58,6 +61,7 @@ class CoordinateField(models.FloatField):
 
 
 class HeightField(models.PositiveIntegerField):
+    """Поле высоты."""
     def __init__(self, *args, **kwargs):
         kwargs['null'] = True
         kwargs['blank'] = True
@@ -66,8 +70,8 @@ class HeightField(models.PositiveIntegerField):
 
 
 class User(BaseModel):
-    """Почта пользователя перевала.
-    Поля - pk, email"""
+    """Почта и прочие данные пользователя
+    Поля - pk, email, fam, name, otc, phone"""
     email = models.EmailField(unique=True, blank=False)
     fam = models.CharField(max_length=100, null=True, blank=True)
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -78,7 +82,11 @@ class User(BaseModel):
         ordering = ['email']
 
     def __str__(self):
-        return f'{self.fam} {self.name} {self.otc} <{self.email}>'
+        fam = self.fam or ''
+        name = self.name or ''
+        otc = self.otc or ''
+        full_name = ' '.join([fam, name, otc])
+        return f'{full_name} <{self.email}>'
 
 
 class Added(BaseModel):
