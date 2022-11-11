@@ -1,5 +1,10 @@
+import os
+from django.conf import settings
+
 from .models import *
 from rest_framework import serializers
+from base64 import b64encode, b64decode
+
 
 DIFFICULTY_DICT = dict(PEREVAL_DIFFICULTIES)
 
@@ -20,7 +25,11 @@ class ImagesSerializer(serializers.HyperlinkedModelSerializer):
     def get_data(self, obj):
         """Returns Image contents in JSON format"""
         #todo
-        return f'<image "{obj.title}" will be here>'
+        full_path = os.path.join(settings.MEDIA_ROOT, obj.path.name)
+        with open(full_path, 'rb') as picture:
+            picture_content = picture.read()
+        picture_content = b64encode(picture_content)
+        return picture_content
 
 
 class CoordsSerializer(serializers.HyperlinkedModelSerializer):
