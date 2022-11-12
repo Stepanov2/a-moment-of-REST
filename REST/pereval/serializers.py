@@ -1,4 +1,6 @@
 import os
+from random import randint
+
 from django.conf import settings
 from rest_framework.fields import empty
 from rest_framework.validators import UniqueValidator
@@ -37,6 +39,11 @@ class NonUniqueValidatingUserSerializer(UserSerializer):
 class Base64ImageField(serializers.ImageField):
     """Returns/accepts base64 encoded images instead of urls"""
     # TODO this should ideally be modified to work with django storage api instead of naive python open()
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     self.validators = []
+
     def to_representation(self, obj):
         """Grabs filepath, returns base64 encoded string"""
         full_path = os.path.join(settings.MEDIA_ROOT, obj.name)
@@ -47,7 +54,10 @@ class Base64ImageField(serializers.ImageField):
 
     def to_internal_value(self, data):
         """Grabs base64 encoded string, dumps it into file, creates filefield."""
-        pass  # todo=)
+        print("I Was called!")
+        return data
+
+
 
 
 class ImagesSerializer(serializers.HyperlinkedModelSerializer):
@@ -128,7 +138,7 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
 
 
     def create(self, validated_data:dict):
-        print(validated_data)
+        # print(validated_data)
         # print(self.__dict__)
 
         # ====== Step 1 - popping images and user data from validated data
@@ -155,8 +165,18 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
 
         new_pereval = Added.objects.create(user=user, **validated_data)
 
-        # ====== Step 4 - Saving images to pereval
+        # ====== Step 4 - Saving images to storage and creating database entries
+        # Note due to the way the serializer is implemented, image contents are stored in 'path'. Confusing, I know.
 
-        pass
+        base_dir = os.path.join(settings.MEDIA_ROOT, PHOTO_UPLOAD_DIR)
+        for index, image in enumerate(user_images):
+            print(f'{image["title"]} - {image["path"][:40]}...')
+            file_name = f'pereval_{new_pereval.pk}_img_{index}_{randint(10000, 99999)}.jpg'
+            full_path = os.path.join(base_dir, file_name)
+            print(full_path)
+            with open(full_path, 'wb') as picture:
+                picture.write(b64decode(image["path"]))
+
+            Image.objects.create(added=new_pereval, path=PHOTO_UPLOAD_DIR + file_name, title=image['title'])
 
         return new_pereval

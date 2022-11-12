@@ -30,6 +30,8 @@ POSSIBLE_PEREVAL_STATUSES = [
     ('rejected', 'Отклонено'),
 ]
 
+PHOTO_UPLOAD_DIR = 'pereval_photo/'
+
 class PerevalCategoryField(models.PositiveSmallIntegerField):
     """Поле выбора сложности перевала."""
     def __init__(self, *args, **kwargs):
@@ -116,7 +118,7 @@ class Added(BaseModel):
 class Image(BaseModel):
     """Фото, загруженные пользователями"""
     added = models.ForeignKey(Added, on_delete=models.CASCADE)
-    path = models.ImageField(upload_to='pereval_photo/',)
+    path = models.ImageField(upload_to=PHOTO_UPLOAD_DIR,)
     title = models.CharField(max_length=100)
 
     class Meta:
