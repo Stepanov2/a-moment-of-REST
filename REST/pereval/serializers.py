@@ -66,35 +66,48 @@ class CoordsSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['latitude', 'longitude', 'height']
 
 
-class LevelChoiceField(serializers.IntegerField):
+class LevelChoiceField(serializers.CharField):
     """This returns/accepts labels("2-Б") instead of values (4).
     """
 
     def __init__(self, **kwargs):  # regrettably, some hacks were... required
+        kwargs['required'] = False
+        kwargs['allow_null'] = True
         super().__init__(**kwargs)
-        self.required = False
+
+
+    # def run_validators(self, value):
+    #     if value == '':
+    #         value = None
+    #     super().run_validators(self, value)
 
     def to_representation(self, data):
+        print('SOMEONE CALLED?')
         try:
             return DIFFICULTY_DICT[data]
         except KeyError:
-            return None
+            return ''
+
 
     def to_internal_value(self, data):
         for key, value in DIFFICULTY_DICT.items():
             if value == data:
                 return key
-        self.fail('Выбрана несуществующая категория перевала.', input=data)
+        if data is None or data == '':
+            print("#"*80)
+            print(data)
+            return None
+        raise ValidationError(f'Выбрана несуществующая категория перевала. Возможные значения:{DIFFICULTY_DICT.values()}')
 
 
 class LevelSerializer(serializers.HyperlinkedModelSerializer):
     """Returns dificulty levels as a separate dict.
     Note: if level is unspecified, returns null
     """
-    winter = LevelChoiceField(source='level_winter', required=False)
-    summer = LevelChoiceField(source='level_summer', required=False)
-    autumn = LevelChoiceField(source='level_autumn', required=False)
-    spring = LevelChoiceField(source='level_spring', required=False)
+    winter = LevelChoiceField(source='level_winter',)
+    summer = LevelChoiceField(source='level_summer',)
+    autumn = LevelChoiceField(source='level_autumn',)
+    spring = LevelChoiceField(source='level_spring',)
 
     class Meta:
         model = Added
@@ -112,7 +125,7 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
         model = Added
         fields = ['pk', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
                   'coords', 'level', 'images']
-        extra_kwargs = {'add_time': {'required': False, 'allow_null': True}}
+
 
     def create(self, validated_data:dict):
         print(validated_data)

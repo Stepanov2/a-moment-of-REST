@@ -37,9 +37,6 @@ class PerevalCategoryField(models.PositiveSmallIntegerField):
         kwargs['null'] = True
         kwargs['blank'] = True
         super().__init__(*args, **kwargs)
-        self.null = True
-        self.blank = True
-
 
 def validate_coordinates(value: float):
     """Убеждается, что мы на земле)"""
@@ -56,8 +53,6 @@ def validate_height(value: int):
 class CoordinateField(models.FloatField):
     """Поле широты/долготы"""
     def __init__(self, *args, **kwargs):
-        kwargs['null'] = True
-        kwargs['blank'] = True
         kwargs['validators'] = [validate_coordinates]
         super().__init__(*args, **kwargs)
 
@@ -65,8 +60,6 @@ class CoordinateField(models.FloatField):
 class HeightField(models.PositiveIntegerField):
     """Поле высоты."""
     def __init__(self, *args, **kwargs):
-        kwargs['null'] = True
-        kwargs['blank'] = True
         kwargs['validators'] = [validate_height]
         super().__init__(*args, **kwargs)
 
