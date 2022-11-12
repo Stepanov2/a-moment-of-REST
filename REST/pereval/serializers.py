@@ -68,7 +68,6 @@ class CoordsSerializer(serializers.HyperlinkedModelSerializer):
 
 class LevelChoiceField(serializers.IntegerField):
     """This returns/accepts labels("2-Б") instead of values (4).
-    Also renames the fields for saving in database.
     """
 
     def __init__(self, **kwargs):  # regrettably, some hacks were... required
@@ -76,16 +75,12 @@ class LevelChoiceField(serializers.IntegerField):
         self.required = False
 
     def to_representation(self, data):
-        print(f'to_representation called "{self.field_name}"')
-        self.field_name.replace('level_', '')
         try:
             return DIFFICULTY_DICT[data]
         except KeyError:
             return None
 
     def to_internal_value(self, data):
-        print(f'to_internal_value called "{self.field_name}"')
-        self.field_name = 'level_' + self.field_name
         for key, value in DIFFICULTY_DICT.items():
             if value == data:
                 return key
