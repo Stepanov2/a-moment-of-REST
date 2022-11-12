@@ -20,12 +20,11 @@ from django.urls import path, include
 from rest_framework import routers
 
 
-from pereval.views import PerevalViewSet, ImageViewSet, UserViewSet
+from pereval.views import PerevalViewSet
 
 router = routers.DefaultRouter()
 router.register('pereval', PerevalViewSet)
-router.register('image-detail', ImageViewSet)
-router.register('user-detail', UserViewSet)
+
 
 
 

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'hello_rest_world',
     'pereval'
 ]
 
@@ -139,3 +138,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_PATH = 'media'
+
+PEREVAL_DIFFICULTIES = [
+    (1, '1-А'),
+    (2, '1-Б'),
+    (3, '2-А'),
+    (4, '2-Б'),
+    (5, '3-А'),
+    (6, '3-Б'),
+]
+
+PEREVAL_POSSIBLE_STATUSES = [
+    ('new', 'Загружено пользователем'),
+    ('pending', 'Взято в проверку'),
+    ('accepted', 'Принято'),
+    ('rejected', 'Отклонено'),
+]
+
+PEREVAL_PHOTO_UPLOAD_DIR = 'pereval_photo/'

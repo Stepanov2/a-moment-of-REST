@@ -1,29 +1,34 @@
-from django.shortcuts import render
+from rest_framework import mixins, status
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
-# Create your views here.
-from rest_framework import viewsets
 from .serializers import *
 
 
-class PerevalViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to view or add perevals
-    """
+class PartialModelViewSet(mixins.CreateModelMixin,
+                          mixins.RetrieveModelMixin,
+                          mixins.ListModelMixin,
+                          GenericViewSet):
+    """Abstract class that does not implement update() or destroy()"""
+    pass
+
+
+class PerevalViewSet(PartialModelViewSet):
+    """API endpoint that allows users to view or add perevals.
+    Use null for optional fields, or don't include them.
+    Do NOT use "" as value for optional fields! """
     queryset = Added.objects.all().order_by('status', '-add_time')
     serializer_class = PerevalSerializer
 
+    def create(self, request, *args, **kwargs):
+        """Formats response as per specification."""
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid(raise_exception=False):
+            return Response({'status': 400, 'message': str(serializer.errors), 'id': None},
+                            status=status.HTTP_400_BAD_REQUEST)
 
-class ImageViewSet(viewsets.ModelViewSet):
-    """
-    Image browser.
-    """
-    queryset = Image.objects.all()
-    serializer_class = ImagesSerializer
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    User browser
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        print(serializer.__dict__)
+        return Response({'status': 201, 'message': None, 'id': serializer.instance.pk},
+                        status=status.HTTP_201_CREATED, headers=headers)

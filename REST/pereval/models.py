@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 class BaseModel(models.Model):
@@ -14,6 +13,9 @@ class BaseModel(models.Model):
         abstract = True
 
 
+# ====== Константы =====
+
+
 PEREVAL_DIFFICULTIES = [
     (1, '1-А'),
     (2, '1-Б'),
@@ -23,14 +25,18 @@ PEREVAL_DIFFICULTIES = [
     (6, '3-Б'),
 ]
 
-POSSIBLE_PEREVAL_STATUSES = [
+PEREVAL_POSSIBLE_STATUSES = [
     ('new', 'Загружено пользователем'),
     ('pending', 'Взято в проверку'),
     ('accepted', 'Принято'),
     ('rejected', 'Отклонено'),
 ]
 
-PHOTO_UPLOAD_DIR = 'pereval_photo/'
+PEREVAL_PHOTO_UPLOAD_DIR = 'pereval_photo/'
+
+
+# ====== Поля и валидаторы =====
+
 
 class PerevalCategoryField(models.PositiveSmallIntegerField):
     """Поле выбора сложности перевала."""
@@ -40,8 +46,9 @@ class PerevalCategoryField(models.PositiveSmallIntegerField):
         kwargs['blank'] = True
         super().__init__(*args, **kwargs)
 
+
 def validate_coordinates(value: float):
-    """Убеждается, что мы на земле)"""
+    """Убеждается, что нам дали корректную полярную координату)"""
     if not (-90 <= value <= 90):
         raise ValidationError(f'одна из координат перевала выходит за границы допустимых значений. {value} ∉ [-90,90] ')
 
@@ -66,6 +73,9 @@ class HeightField(models.PositiveIntegerField):
         super().__init__(*args, **kwargs)
 
 
+# ====== Модели =====
+
+
 class User(BaseModel):
     """Почта и прочие данные пользователя
     Поля - pk, email, fam, name, otc, phone"""
@@ -79,6 +89,7 @@ class User(BaseModel):
         ordering = ['email']
 
     def __str__(self):
+        """Иванов Иван Иванович <hi@example.com>"""
         fam = self.fam or ''
         name = self.name or ''
         otc = self.otc or ''
@@ -87,7 +98,9 @@ class User(BaseModel):
 
 
 class Added(BaseModel):
-    """Обзор перевала, добавленный пользователем"""
+    """Обзор перевала, добавленный пользователем
+    Поля - pk, user, beauty_title, title, other_titles, connect,
+    add_time, level_summer/autumn/winter/spring, latitude, longiude, height, status"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     beauty_title = models.CharField(max_length=50, null=True, blank=True)
     title = models.CharField(max_length=100)
@@ -96,29 +109,32 @@ class Added(BaseModel):
 
     add_time = models.DateTimeField()
 
-    level_summer = PerevalCategoryField(null=True, blank=True)
-    level_autumn = PerevalCategoryField(null=True, blank=True)
-    level_winter = PerevalCategoryField(null=True, blank=True)
-    level_spring = PerevalCategoryField(null=True, blank=True)
+    level_summer = PerevalCategoryField()
+    level_autumn = PerevalCategoryField()
+    level_winter = PerevalCategoryField()
+    level_spring = PerevalCategoryField()
 
     latitude = CoordinateField()
     longitude = CoordinateField()
     height = HeightField()
 
-    status = models.CharField(max_length=15, choices=POSSIBLE_PEREVAL_STATUSES, default='new')
+    status = models.CharField(max_length=15, choices=PEREVAL_POSSIBLE_STATUSES, default='new')
 
     class Meta:
         ordering = ['add_time']
 
     def __str__(self):
-        return f'{self.beauty_title} {self.title} ({self.other_titles})'
+        """пер. Кривой (Прямой)"""
+        beauty_title = self.beauty_title or ''
+        other_titles = f'({self.other_titles})' if self.other_titles else ''
+        return f'{beauty_title} {self.title} {other_titles}'.strip()
     pass
 
 
 class Image(BaseModel):
     """Фото, загруженные пользователями"""
     added = models.ForeignKey(Added, on_delete=models.CASCADE)
-    path = models.ImageField(upload_to=PHOTO_UPLOAD_DIR,)
+    path = models.ImageField(upload_to=PEREVAL_PHOTO_UPLOAD_DIR, )
     title = models.CharField(max_length=100)
 
     class Meta:
@@ -126,4 +142,3 @@ class Image(BaseModel):
 
     def __str__(self):
         return self.title
-
