@@ -97,12 +97,12 @@ class Added(BaseModel):
     other_titles = models.CharField(max_length=100, null=True, blank=True)
     connect = models.CharField(max_length=200, null=True, blank=True)
 
-    add_time = models.DateTimeField(default=timezone.now())
+    add_time = models.DateTimeField(null=True, auto_now_add=True)
 
-    level_summer = PerevalCategoryField()
-    level_autumn = PerevalCategoryField()
-    level_winter = PerevalCategoryField()
-    level_spring = PerevalCategoryField()
+    level_summer = PerevalCategoryField(null=True, blank=True)
+    level_autumn = PerevalCategoryField(null=True, blank=True)
+    level_winter = PerevalCategoryField(null=True, blank=True)
+    level_spring = PerevalCategoryField(null=True, blank=True)
 
     latitude = CoordinateField()
     longitude = CoordinateField()
