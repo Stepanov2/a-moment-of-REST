@@ -112,6 +112,7 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
         model = Added
         fields = ['pk', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
                   'coords', 'level', 'images']
+        extra_kwargs = {'add_time': {'required': False, 'allow_null': True}}
 
     def create(self, validated_data:dict):
         print(validated_data)
@@ -121,6 +122,8 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
 
         user_data = dict(validated_data.pop('user'))
         user_images = validated_data.pop('image_set')
+        if validated_data['add_time'] is None:
+            pass
         # coordinates = validated_data.pop('coords')
         # validated_data = {**validated_data, **coordinates}
 

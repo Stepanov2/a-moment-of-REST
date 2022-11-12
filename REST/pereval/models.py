@@ -37,6 +37,8 @@ class PerevalCategoryField(models.PositiveSmallIntegerField):
         kwargs['null'] = True
         kwargs['blank'] = True
         super().__init__(*args, **kwargs)
+        self.null = True
+        self.blank = True
 
 
 def validate_coordinates(value: float):
@@ -97,7 +99,7 @@ class Added(BaseModel):
     other_titles = models.CharField(max_length=100, null=True, blank=True)
     connect = models.CharField(max_length=200, null=True, blank=True)
 
-    add_time = models.DateTimeField(null=True, auto_now_add=True)
+    add_time = models.DateTimeField()
 
     level_summer = PerevalCategoryField(null=True, blank=True)
     level_autumn = PerevalCategoryField(null=True, blank=True)
