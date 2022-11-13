@@ -23,7 +23,7 @@ from rest_framework import routers
 from pereval.views import PerevalViewSet
 
 router = routers.DefaultRouter()
-router.register('pereval', PerevalViewSet)
+router.register('submitData', PerevalViewSet)
 
 
 

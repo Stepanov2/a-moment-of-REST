@@ -128,7 +128,7 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Added
-        fields = ['pk', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
+        fields = ['pk', 'status', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
                   'coords', 'level', 'images']
 
     def create(self, validated_data: dict):

@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -19,6 +20,8 @@ class PerevalViewSet(PartialModelViewSet):
     Do NOT use "" as value for optional fields! """
     queryset = Added.objects.all().order_by('status', '-add_time')
     serializer_class = PerevalSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user__email', 'status']
 
     def create(self, request, *args, **kwargs):
         """Formats response as per specification."""
@@ -32,3 +35,6 @@ class PerevalViewSet(PartialModelViewSet):
         print(serializer.__dict__)
         return Response({'status': 201, 'message': None, 'id': serializer.instance.pk},
                         status=status.HTTP_201_CREATED, headers=headers)
+
+    def get(self, request, *args, **kwargs):
+        pass
