@@ -18,16 +18,14 @@ class PerevalTestCase(TestCase):
     def setUp(self):
         with open(os.path.join(settings.BASE_DIR, 'pereval', 'test_data.json'), 'r', encoding='utf-8') as data:
             self.create_data = json.load(data)  # Эти данные копируются в каждый тест через deepcopy
-        self.endpoint = "http://localhost:8000/api/products/"
         self.get_list = PerevalViewSet.as_view({'get': 'list'})
         self.get_details = PerevalViewSet.as_view({'get': 'retrieve'})
         self.post = PerevalViewSet.as_view({'post': 'create'})
         self.put = PerevalViewSet.as_view({'put': 'update'})
         self.patch = PerevalViewSet.as_view({'patch': 'partial_update'})
 
-
     def test_create(self):
-
+        """Проверяем POST"""
         factory = APIRequestFactory()
         data = deepcopy(self.create_data)
 
@@ -80,7 +78,6 @@ class PerevalTestCase(TestCase):
 
         request = factory.post('/submitData/', data, format='json')
         patch_id = self.post(request).data['id']
-
 
         # Меняем все возможные значения в данных запроса.
         for key, value in data.items():

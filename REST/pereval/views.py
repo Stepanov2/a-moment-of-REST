@@ -21,7 +21,7 @@ class PerevalViewSet(PartialModelViewSet):
     Use null for optional fields, or don't include them.
     Do NOT use "" as value for optional fields! """
     queryset = Added.objects.all()
-    serializer_class = PerevalSerializer
+    # serializer_class = PerevalSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['user__email', 'status']
     lookup_field = 'pk'
