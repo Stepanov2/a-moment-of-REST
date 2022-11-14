@@ -86,15 +86,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    '5 ballov=)': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': os.getenv("FSTR_DB_LOGIN"),
-        'PASSWORD': os.getenv("FSTR_DB_PASS"),
-        'HOST': os.getenv("FSTR_DB_HOST"),
-        'PORT': os.getenv("FSTR_DB_PORT"),
-
-    }
+    # '5 ballov=)': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'postgres',
+    #     'USER': os.getenv("FSTR_DB_LOGIN"),
+    #     'PASSWORD': os.getenv("FSTR_DB_PASS"),
+    #     'HOST': os.getenv("FSTR_DB_HOST"),
+    #     'PORT': os.getenv("FSTR_DB_PORT"),
+    #
+    # }
 }
 
 

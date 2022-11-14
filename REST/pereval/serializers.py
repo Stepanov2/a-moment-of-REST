@@ -130,6 +130,7 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
         model = Added
         fields = ['pk', 'status', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time', 'user',
                   'coords', 'level', 'images']
+        extra_kwargs = {'status': {'read_only': True}}
 
     def create(self, validated_data: dict):
 
@@ -164,3 +165,15 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
             Image.objects.create(added=new_pereval, path=PEREVAL_PHOTO_UPLOAD_DIR + file_name, title=image['title'])
 
         return new_pereval
+
+
+class PerevalUpdateSerializer(PerevalSerializer):
+    """A version of serializer that omits 'user' and 'images' fields. Used for PUT/PATCH"""
+    user = None
+    images = None
+
+    class Meta:
+        model = Added
+        fields = ['pk', 'status', 'beauty_title', 'title', 'other_titles', 'connect', 'add_time',
+                  'coords', 'level']
+        extra_kwargs = {'status': {'read_only': True}}
