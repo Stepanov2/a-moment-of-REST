@@ -32,12 +32,11 @@ class PerevalViewSet(PartialModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid(raise_exception=False):
-            return Response({'status': 400, 'message': str(serializer.errors), 'id': None},
+            return Response({'status': 400, 'message': serializer.errors, 'id': None},
                             status=status.HTTP_400_BAD_REQUEST)
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        print(serializer.__dict__)
         return Response({'status': 201, 'message': None, 'id': serializer.instance.pk},
                         status=status.HTTP_201_CREATED, headers=headers)
 

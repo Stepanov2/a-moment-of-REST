@@ -67,6 +67,8 @@ class ImagesSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['data', 'title']
 
 
+
+
 # ====== Coordinates and pereval levels serialization =====
 
 
@@ -123,8 +125,8 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
 
     coords = CoordsSerializer(source='*')
     level = LevelSerializer(source='*')
-    user = NonUniqueValidatingUserSerializer()
-    images = ImagesSerializer(source='image_set', many=True)
+    user = NonUniqueValidatingUserSerializer(required=True)
+    images = ImagesSerializer(source='image_set', many=True, required=True)
 
     class Meta:
         model = Added
@@ -132,12 +134,19 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
                   'coords', 'level', 'images']
         extra_kwargs = {'status': {'read_only': True}}
 
+    def validate(self, attrs):
+        if not len(attrs['image_set']):
+            raise ValidationError("Нужно прислать хотя бы одну фотографию")
+        return attrs
+
     def create(self, validated_data: dict):
 
         # ====== Step 1 - popping images and user data from validated data
 
         user_data = dict(validated_data.pop('user'))
-        user_images = validated_data.pop('image_set')
+        user_images = validated_data.pop('image_set', None)
+        if not len(user_images):
+            raise ValidationError("Нужно прислать хотя бы одну фотографию")
 
         # ====== Step 2 - Creating or updating User
 
