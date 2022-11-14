@@ -135,8 +135,11 @@ class PerevalSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {'status': {'read_only': True}}
 
     def validate(self, attrs):
-        if not len(attrs['image_set']):
-            raise ValidationError("Нужно прислать хотя бы одну фотографию")
+        try:
+            if not len(attrs['image_set']):
+                raise ValidationError("Нужно прислать хотя бы одну фотографию")
+        except KeyError:
+            pass
         return attrs
 
     def create(self, validated_data: dict):
