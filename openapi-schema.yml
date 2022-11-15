@@ -1,0 +1,380 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /submitData/:
+    get:
+      operationId: listAddeds
+      description: 'API endpoint that allows users to view or add perevals.
+
+        Use null for optional fields, or don''t include them.
+
+        Do NOT use "" as value for optional fields!'
+      parameters:
+      - name: user__email
+        required: false
+        in: query
+        description: user__email
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pereval'
+          description: ''
+      tags:
+      - submitData
+    post:
+      operationId: createAdded
+      description: Formats response for POST mehtod as per specification.
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pereval'
+          description: ''
+      tags:
+      - submitData
+  /submitData/{id}/:
+    get:
+      operationId: retrieveAdded
+      description: 'API endpoint that allows users to view or add perevals.
+
+        Use null for optional fields, or don''t include them.
+
+        Do NOT use "" as value for optional fields!'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this added.
+        schema:
+          type: string
+      - name: user__email
+        required: false
+        in: query
+        description: user__email
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pereval'
+          description: ''
+      tags:
+      - submitData
+    put:
+      operationId: updateAdded
+      description: 'Formats response for PUT and PATCH mehtods as per specification.
+
+        Also disallows editing if status is different from new.'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this added.
+        schema:
+          type: string
+      - name: user__email
+        required: false
+        in: query
+        description: user__email
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerevalUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PerevalUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PerevalUpdate'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerevalUpdate'
+          description: ''
+      tags:
+      - submitData
+    patch:
+      operationId: partialUpdateAdded
+      description: 'API endpoint that allows users to view or add perevals.
+
+        Use null for optional fields, or don''t include them.
+
+        Do NOT use "" as value for optional fields!'
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this added.
+        schema:
+          type: string
+      - name: user__email
+        required: false
+        in: query
+        description: user__email
+        schema:
+          type: string
+      - name: status
+        required: false
+        in: query
+        description: status
+        schema:
+          type: string
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Pereval'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pereval'
+          description: ''
+      tags:
+      - submitData
+components:
+  schemas:
+    Pereval:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        status:
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+          type: string
+          readOnly: true
+        beauty_title:
+          type: string
+          nullable: true
+          maxLength: 50
+        title:
+          type: string
+          maxLength: 100
+        other_titles:
+          type: string
+          nullable: true
+          maxLength: 100
+        connect:
+          type: string
+          nullable: true
+          maxLength: 200
+        add_time:
+          type: string
+          format: date-time
+        user:
+          type: object
+          properties:
+            email:
+              type: string
+              format: email
+              maxLength: 254
+            fam:
+              type: string
+              nullable: true
+              maxLength: 100
+            name:
+              type: string
+              nullable: true
+              maxLength: 100
+            otc:
+              type: string
+              nullable: true
+              maxLength: 100
+            phone:
+              type: string
+              nullable: true
+              maxLength: 25
+          required:
+          - email
+        coords:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+            height:
+              type: integer
+          required:
+          - latitude
+          - longitude
+          - height
+        level:
+          type: object
+          properties:
+            winter:
+              type: string
+              nullable: true
+            summer:
+              type: string
+              nullable: true
+            autumn:
+              type: string
+              nullable: true
+            spring:
+              type: string
+              nullable: true
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              data:
+                type: string
+                format: binary
+              title:
+                type: string
+                maxLength: 100
+            required:
+            - data
+            - title
+      required:
+      - title
+      - add_time
+      - user
+      - coords
+      - level
+      - images
+    PerevalUpdate:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        status:
+          enum:
+          - new
+          - pending
+          - accepted
+          - rejected
+          type: string
+          readOnly: true
+        beauty_title:
+          type: string
+          nullable: true
+          maxLength: 50
+        title:
+          type: string
+          maxLength: 100
+        other_titles:
+          type: string
+          nullable: true
+          maxLength: 100
+        connect:
+          type: string
+          nullable: true
+          maxLength: 200
+        add_time:
+          type: string
+          format: date-time
+        coords:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+            height:
+              type: integer
+          required:
+          - latitude
+          - longitude
+          - height
+        level:
+          type: object
+          properties:
+            winter:
+              type: string
+              nullable: true
+            summer:
+              type: string
+              nullable: true
+            autumn:
+              type: string
+              nullable: true
+            spring:
+              type: string
+              nullable: true
+      required:
+      - title
+      - add_time
+      - coords
+      - level
