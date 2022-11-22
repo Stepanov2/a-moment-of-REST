@@ -117,7 +117,7 @@ class PerevalTestCase(TestCase):
         for key, value in cleaned_data.items():
             if key not in ('add_time', 'coords', 'level'):  # todo Надо получать данные от сериализатора, а не от модели
                 self.assert_(value == pereval_put.__dict__[key], msg=f'{key}: {value}, {pereval_put.__dict__[key]}')
-                self.assert_(value == pereval_patch.__dict__[key], msg=f'{key}: {value}, {pereval_put.__dict__[key]}')
+                self.assert_(value == pereval_patch.__dict__[key], msg=f'{key}: {value}, {pereval_patch.__dict__[key]}')
 
         # Проверяем, что нельзя исправить перевал, который взяли в работу
         for i in range(1, 4):
